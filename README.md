@@ -16,7 +16,7 @@ Add this to your package's pubspec.yaml file:
 
 ```yaml
 dependencies:
-  w_popup_menu: ^0.0.1
+  w_popup_menu: ^0.1.0
 ```
 
 ### 2. Install it
