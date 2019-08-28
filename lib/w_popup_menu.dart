@@ -546,8 +546,8 @@ class _PopupMenuRouteLayout extends SingleChildLayoutDelegate {
       else if (y < childSize.height * 2) {
         y = position.top + childSize.height;
       }
-      return Offset(x, y);
     }
+    return Offset(x, y);
   }
 
   @override

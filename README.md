@@ -6,7 +6,7 @@ A pop-up menu that mimics the iOS WeChat page.
 
 ![](http://pic.d3collection.cn/2019-08-12-153309.png)
 
-**[0.2.2]**
+**[0.2.3]**
 
 - 更新了「WPopupMenu」的构造函数，现在「WPopupMenu」的构造函数是和 「Container」一样的，在内部封装了一个Container，如果想要什么属性，例如margin的话，请直接在「WPopupMenu」的属性中添加，否则控件获取不到你的margin。
 
@@ -20,7 +20,7 @@ Add this to your package's pubspec.yaml file:
 
 ```yaml
 dependencies:
-  w_popup_menu: ^0.2.2
+  w_popup_menu: ^0.2.3
 ```
 
 ### 2. Install it
