@@ -1,3 +1,6 @@
-## [0.0.1] - TODO: Add release date.
+## [0.1.0] - TODO: Add release date.
 
 * TODO: Describe initial release.
+## [0.2.2]
+
+- 更新了「WPopupMenu」的构造函数，现在「WPopupMenu」的构造函数是和 「Container」一样的，在内部封装了一个Container，如果想要什么属性，例如margin的话，请直接在「WPopupMenu」的属性中添加，否则控件获取不到你的margin。

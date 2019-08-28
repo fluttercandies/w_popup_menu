@@ -5,6 +5,7 @@ const double _kMenuScreenPadding = 8.0;
 
 class WPopupMenu extends StatefulWidget {
   WPopupMenu({
+    Key key,
     @required this.onValueChanged,
     @required this.actions,
     @required this.child,
@@ -13,10 +14,42 @@ class WPopupMenu extends StatefulWidget {
     this.backgroundColor = Colors.black,
     this.menuWidth = 250,
     this.menuHeight = 42,
+    this.alignment,
+    this.padding,
+    Color color,
+    Decoration decoration,
+    this.foregroundDecoration,
+    double width,
+    double height,
+    BoxConstraints constraints,
+    this.margin,
+    this.transform,
   })  : assert(onValueChanged != null),
         assert(actions != null && actions.length > 0),
-        assert(child != null);
+        assert(child != null),
+        assert(margin == null || margin.isNonNegative),
+        assert(padding == null || padding.isNonNegative),
+        assert(decoration == null || decoration.debugAssertIsValid()),
+        assert(constraints == null || constraints.debugAssertIsValid()),
+        assert(
+        color == null || decoration == null,
+        'Cannot provide both a color and a decoration\n'
+            'The color argument is just a shorthand for "decoration: new BoxDecoration(color: color)".'),
+        decoration =
+            decoration ?? (color != null ? BoxDecoration(color: color) : null),
+        constraints = (width != null || height != null)
+            ? constraints?.tighten(width: width, height: height) ??
+            BoxConstraints.tightFor(width: width, height: height)
+            : constraints,
+        super(key: key);
 
+  final BoxConstraints constraints;
+  final Decoration decoration;
+  final AlignmentGeometry alignment;
+  final EdgeInsets padding;
+  final Decoration foregroundDecoration;
+  final EdgeInsets margin;
+  final Matrix4 transform;
   final ValueChanged<int> onValueChanged;
   final List<String> actions;
   final Widget child;
@@ -31,11 +64,19 @@ class WPopupMenu extends StatefulWidget {
 }
 
 class _WPopupMenuState extends State<WPopupMenu> {
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      child: widget.child,
+      child: Container(
+        key: widget.key,
+        padding: widget.padding,
+        margin: widget.margin,
+        decoration: widget.decoration,
+        constraints: widget.constraints,
+        transform: widget.transform,
+        alignment: widget.alignment,
+        child: widget.child,
+      ),
       onTap: () {
         if (widget.pressType == PressType.singleClick) {
           onTap();
@@ -49,11 +90,18 @@ class _WPopupMenuState extends State<WPopupMenu> {
     );
   }
 
-  void onTap(){
+  void onTap() {
     Navigator.push(
         context,
         _PopupMenuRoute(
-            context, widget.actions, widget.pageMaxChildCount, widget.backgroundColor, widget.menuWidth, widget.menuHeight))
+            context,
+            widget.actions,
+            widget.pageMaxChildCount,
+            widget.backgroundColor,
+            widget.menuWidth,
+            widget.menuHeight,
+            widget.padding,
+            widget.margin))
         .then((index) {
       widget.onValueChanged(index);
     });
@@ -76,10 +124,26 @@ class _PopupMenuRoute extends PopupRoute {
   final Color backgroundColor;
   final double menuWidth;
   final double menuHeight;
+  final EdgeInsets padding;
+  final EdgeInsets margin;
 
-  _PopupMenuRoute(this.btnContext, this.actions, this._pageMaxChildCount, this.backgroundColor, this.menuWidth, this.menuHeight) {
-    _height = btnContext.size.height;
-    _width = btnContext.size.width;
+  _PopupMenuRoute(
+      this.btnContext,
+      this.actions,
+      this._pageMaxChildCount,
+      this.backgroundColor,
+      this.menuWidth,
+      this.menuHeight,
+      this.padding,
+      this.margin) {
+    _height = btnContext.size.height -
+        (padding == null
+            ? margin == null ? 0 : margin.vertical
+            : padding.vertical);
+    _width = btnContext.size.width -
+        (padding == null
+            ? margin == null ? 0 : margin.horizontal
+            : padding.horizontal);
   }
 
   @override
@@ -103,7 +167,17 @@ class _PopupMenuRoute extends PopupRoute {
   @override
   Widget buildPage(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation) {
-    return _MenuPopWidget(this.btnContext, _height, _width, actions, _pageMaxChildCount, backgroundColor, menuWidth, menuHeight);
+    return _MenuPopWidget(
+        this.btnContext,
+        _height,
+        _width,
+        actions,
+        _pageMaxChildCount,
+        backgroundColor,
+        menuWidth,
+        menuHeight,
+        padding,
+        margin);
   }
 
   @override
@@ -119,9 +193,21 @@ class _MenuPopWidget extends StatefulWidget {
   final Color backgroundColor;
   final double menuWidth;
   final double menuHeight;
+  final EdgeInsets padding;
+  final EdgeInsets margin;
 
-  _MenuPopWidget(this.btnContext, this._height, this._width, this.actions,
-      this._pageMaxChildCount, this.backgroundColor, this.menuWidth, this.menuHeight);
+  _MenuPopWidget(
+      this.btnContext,
+      this._height,
+      this._width,
+      this.actions,
+      this._pageMaxChildCount,
+      this.backgroundColor,
+      this.menuWidth,
+      this.menuHeight,
+      this.padding,
+      this.margin,
+      );
 
   @override
   __MenuPopWidgetState createState() => __MenuPopWidgetState();
@@ -141,12 +227,27 @@ class __MenuPopWidgetState extends State<_MenuPopWidget> {
   void initState() {
     super.initState();
     button = widget.btnContext.findRenderObject();
-    overlay =
-        Overlay.of(widget.btnContext).context.findRenderObject();
+    overlay = Overlay.of(widget.btnContext).context.findRenderObject();
     position = RelativeRect.fromRect(
       Rect.fromPoints(
-        button.localToGlobal(Offset.zero, ancestor: overlay),
-        button.localToGlobal(Offset.zero, ancestor: overlay),
+        button.localToGlobal(
+            Offset(
+                widget.padding == null
+                    ? widget.margin == null ? 0 : widget.margin.left
+                    : widget.padding.left,
+                widget.padding == null
+                    ? widget.margin == null ? 0 : widget.margin.top
+                    : widget.padding.top),
+            ancestor: overlay),
+        button.localToGlobal(
+            Offset(
+                widget.padding == null
+                    ? widget.margin == null ? 0 : widget.margin.left
+                    : widget.padding.left,
+                widget.padding == null
+                    ? widget.margin == null ? 0 : widget.margin.top
+                    : widget.padding.top),
+            ancestor: overlay),
       ),
       Offset.zero & overlay.size,
     );
@@ -189,15 +290,20 @@ class __MenuPopWidgetState extends State<_MenuPopWidget> {
       child: Builder(
         builder: (BuildContext context) {
           var isInverted = (position.top +
-              (MediaQuery.of(context).size.height - position.top - position.bottom) / 2.0 -
-              (widget.menuHeight + _triangleHeight)) < (widget.menuHeight + _triangleHeight) * 2;
+              (MediaQuery.of(context).size.height -
+                  position.top -
+                  position.bottom) /
+                  2.0 -
+              (widget.menuHeight + _triangleHeight)) <
+              (widget.menuHeight + _triangleHeight) * 2;
           return CustomSingleChildLayout(
             // 这里计算偏移量
             delegate: _PopupMenuRouteLayout(
                 position,
                 widget.menuHeight + _triangleHeight,
                 Directionality.of(widget.btnContext),
-                widget._width, widget.menuWidth),
+                widget._width,
+                widget.menuWidth),
             child: SizedBox(
               height: widget.menuHeight + _triangleHeight,
               width: _curPageWidth,
@@ -206,15 +312,16 @@ class __MenuPopWidgetState extends State<_MenuPopWidget> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-
-                    isInverted ? CustomPaint(
+                    isInverted
+                        ? CustomPaint(
                       size: Size(_curPageWidth, _triangleHeight),
                       painter: TrianglePainter(
                           color: widget.backgroundColor,
                           position: position,
                           isInverted: true,
                           size: button.size),
-                    ): Container(),
+                    )
+                        : Container(),
                     Expanded(
                       child: Stack(
                         children: <Widget>[
@@ -305,7 +412,9 @@ class __MenuPopWidgetState extends State<_MenuPopWidget> {
                         ],
                       ),
                     ),
-                    isInverted ?  Container() : CustomPaint(
+                    isInverted
+                        ? Container()
+                        : CustomPaint(
                       size: Size(_curPageWidth, _triangleHeight),
                       painter: TrianglePainter(
                           color: widget.backgroundColor,
@@ -364,8 +473,8 @@ class __MenuPopWidgetState extends State<_MenuPopWidget> {
 
 // Positioning of the menu on the screen.
 class _PopupMenuRouteLayout extends SingleChildLayoutDelegate {
-  _PopupMenuRouteLayout(
-      this.position, this.selectedItemOffset, this.textDirection, this.width, this.menuWidth);
+  _PopupMenuRouteLayout(this.position, this.selectedItemOffset,
+      this.textDirection, this.width, this.menuWidth);
 
   // Rectangle of underlying button, relative to the overlay's dimensions.
   final RelativeRect position;
@@ -409,37 +518,36 @@ class _PopupMenuRouteLayout extends SingleChildLayoutDelegate {
           selectedItemOffset;
     }
 
-
     // Find the ideal horizontal position.
     double x;
-    if (position.left > position.right) {
-      // Menu button is closer to the right edge, so grow to the left, aligned to the right edge.
-//      x = childSize.width - (size.width - position.right);
-      x = position.left + width - childSize.width;
-    } else if (position.left < position.right) {
-      // Menu button is closer to the left edge, so grow to the right, aligned to the left edge.
-      if (width > childSize.width) {
-        x = position.left + (childSize.width - menuWidth) / 2;
-      } else
-        x = position.left;
-    } else {
-      x = position.right - width / 2 - childSize.width / 2;
 
+    // 如果menu 的宽度 小于 child 的宽度，则直接把menu 放在 child 中间
+    if (childSize.width < width) {
+      x = position.left + (width - childSize.width) / 2;
+    } else {
+      // 如果靠右
+      if (position.left > size.width - (position.left + width)) {
+        if (size.width - (position.left + width) + width > childSize.width) {
+          x = position.left - (childSize.width - width) / 2;
+        } else
+          x = position.left + width - childSize.width;
+      } else if (position.left < size.width - (position.left + width)) {
+        if (position.left + width > childSize.width) {
+          x = position.left - (childSize.width - width) / 2;
+        } else
+          x = position.left;
+      } else {
+        x = position.right - width / 2 - childSize.width / 2;
+      }
+      if (y < _kMenuScreenPadding)
+        y = _kMenuScreenPadding;
+      else if (y + childSize.height > size.height - _kMenuScreenPadding)
+        y = size.height - childSize.height;
+      else if (y < childSize.height * 2) {
+        y = position.top + childSize.height;
+      }
+      return Offset(x, y);
     }
-    // Avoid going outside an area defined as the rectangle 8.0 pixels from the
-    // edge of the screen in every direction.
-    if (x < _kMenuScreenPadding)
-      x = _kMenuScreenPadding;
-    else if (x + childSize.width > size.width - _kMenuScreenPadding)
-      x = size.width - childSize.width - _kMenuScreenPadding;
-    if (y < _kMenuScreenPadding)
-      y = _kMenuScreenPadding;
-    else if (y + childSize.height > size.height - _kMenuScreenPadding)
-      y = size.height - childSize.height;
-    else if (y < childSize.height * 2) {
-      y = position.top + childSize.height;
-    }
-    return Offset(x, y);
   }
 
   @override
