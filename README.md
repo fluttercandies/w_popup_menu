@@ -7,6 +7,11 @@ A pop-up menu that mimics the iOS WeChat page.
 ![](http://pic.d3collection.cn/2019-08-12-153309.png)
 
 
+**[0.3.0]**
+
+- 修改弹出方式为 Overlay，为了解决弹出菜单时输入框会收起的问题
+
+
 **[0.2.5]**
 
 - 修复位置弹出错误的问题
@@ -34,7 +39,7 @@ Add this to your package's pubspec.yaml file:
 
 ```yaml
 dependencies:
-  w_popup_menu: ^0.2.5
+  w_popup_menu: ^0.3.0
 ```
 
 ### 2. Install it
