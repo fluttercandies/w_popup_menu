@@ -50,6 +50,7 @@ class _WPopupMenuState extends State<WPopupMenu> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      behavior: HitTestBehavior.translucent
       child: widget.child,
       onTap: () {
         if (widget.pressType == PressType.singleClick) {
@@ -351,6 +352,7 @@ class _MenuPopWidgetState extends State<_MenuPopWidget> {
       itemCount: _curPageChildCount,
       itemBuilder: (BuildContext context, int index) {
         return GestureDetector(
+          behavior: HitTestBehavior.translucent
           onTap: () {
             widget.onValueChanged(_curPage * widget._pageMaxChildCount + index);
 
