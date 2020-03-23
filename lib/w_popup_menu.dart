@@ -57,6 +57,7 @@ class _WPopupMenuState extends State<WPopupMenu> {
         return Future.value(true);
       },
       child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
         child: widget.child,
         onTap: () {
           if (widget.pressType == PressType.singleClick) {
