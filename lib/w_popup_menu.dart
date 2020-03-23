@@ -49,18 +49,26 @@ class _WPopupMenuState extends State<WPopupMenu> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      child: widget.child,
-      onTap: () {
-        if (widget.pressType == PressType.singleClick) {
-          onTap();
+    return WillPopScope(
+      onWillPop: (){
+        if(entry != null){
+          removeOverlay();
         }
+        return Future.value(true);
       },
-      onLongPress: () {
-        if (widget.pressType == PressType.longPress) {
-          onTap();
-        }
-      },
+      child: GestureDetector(
+        child: widget.child,
+        onTap: () {
+          if (widget.pressType == PressType.singleClick) {
+            onTap();
+          }
+        },
+        onLongPress: () {
+          if (widget.pressType == PressType.longPress) {
+            onTap();
+          }
+        },
+      ),
     );
   }
 
@@ -443,7 +451,6 @@ class _PopupMenuRouteLayout extends SingleChildLayoutDelegate {
             childSize.width / 2 + _kMenuScreenPadding) {
           x = position.left - (childSize.width - width) / 2;
         } else {
-          print('${position.left + width} --- ${size.width} -- $childSize');
           x = position.left + width - childSize.width;
         }
       } else if (position.left < size.width - (position.left + width)) {
@@ -463,8 +470,6 @@ class _PopupMenuRouteLayout extends SingleChildLayoutDelegate {
     else if (y < childSize.height * 2) {
       y = position.top + height;
     }
-//    print(Offset(x, y));
-//    print('${size} --- ${childSize}');
     return Offset(x, y);
   }
 

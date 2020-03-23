@@ -6,6 +6,9 @@ A pop-up menu that mimics the iOS WeChat page.
 
 ![](http://pic.d3collection.cn/2019-08-12-153309.png)
 
+**[0.3.1]**
+
+- 解决返回键不能消失menu的bug
 
 **[0.3.0]**
 
@@ -39,7 +42,7 @@ Add this to your package's pubspec.yaml file:
 
 ```yaml
 dependencies:
-  w_popup_menu: ^0.3.0
+  w_popup_menu: ^0.3.1
 ```
 
 ### 2. Install it
