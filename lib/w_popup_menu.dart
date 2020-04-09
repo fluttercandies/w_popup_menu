@@ -50,8 +50,8 @@ class _WPopupMenuState extends State<WPopupMenu> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: (){
-        if(entry != null){
+      onWillPop: () {
+        if (entry != null) {
           removeOverlay();
         }
         return Future.value(true);
@@ -74,7 +74,7 @@ class _WPopupMenuState extends State<WPopupMenu> {
   }
 
   void onTap() {
-    Widget menuWidget =  _MenuPopWidget(
+    Widget menuWidget = _MenuPopWidget(
       context,
       height,
       width,
@@ -85,7 +85,7 @@ class _WPopupMenuState extends State<WPopupMenu> {
       widget.menuHeight,
       button,
       overlay,
-          (index) {
+      (index) {
         if (index != -1) widget.onValueChanged(index);
         removeOverlay();
       },
@@ -124,18 +124,18 @@ class _MenuPopWidget extends StatefulWidget {
   final ValueChanged<int> onValueChanged;
 
   _MenuPopWidget(
-      this.btnContext,
-      this._height,
-      this._width,
-      this.actions,
-      this._pageMaxChildCount,
-      this.backgroundColor,
-      this.menuWidth,
-      this.menuHeight,
-      this.button,
-      this.overlay,
-      this.onValueChanged,
-      );
+    this.btnContext,
+    this._height,
+    this._width,
+    this.actions,
+    this._pageMaxChildCount,
+    this.backgroundColor,
+    this.menuWidth,
+    this.menuHeight,
+    this.button,
+    this.overlay,
+    this.onValueChanged,
+  );
 
   @override
   _MenuPopWidgetState createState() => _MenuPopWidgetState();
@@ -165,9 +165,9 @@ class _MenuPopWidgetState extends State<_MenuPopWidget> {
   Widget build(BuildContext context) {
     // 这里计算出来 当前页的 child 一共有多少个
     int _curPageChildCount =
-    (_curPage + 1) * widget._pageMaxChildCount > widget.actions.length
-        ? widget.actions.length % widget._pageMaxChildCount
-        : widget._pageMaxChildCount;
+        (_curPage + 1) * widget._pageMaxChildCount > widget.actions.length
+            ? widget.actions.length % widget._pageMaxChildCount
+            : widget._pageMaxChildCount;
 
     double _curArrowWidth = 0;
     int _curArrowCount = 0; // 一共几个箭头
@@ -191,7 +191,7 @@ class _MenuPopWidgetState extends State<_MenuPopWidget> {
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: (){
+      onTap: () {
         widget.onValueChanged(-1);
       },
       child: MediaQuery.removePadding(
@@ -203,11 +203,11 @@ class _MenuPopWidgetState extends State<_MenuPopWidget> {
         child: Builder(
           builder: (BuildContext context) {
             var isInverted = (position.top +
-                (MediaQuery.of(context).size.height -
-                    position.top -
-                    position.bottom) /
-                    2.0 -
-                (widget.menuHeight + _triangleHeight)) <
+                    (MediaQuery.of(context).size.height -
+                            position.top -
+                            position.bottom) /
+                        2.0 -
+                    (widget.menuHeight + _triangleHeight)) <
                 (widget.menuHeight + _triangleHeight) * 2;
             return CustomSingleChildLayout(
               // 这里计算偏移量
@@ -228,22 +228,22 @@ class _MenuPopWidgetState extends State<_MenuPopWidget> {
                     children: <Widget>[
                       isInverted
                           ? CustomPaint(
-                        size: Size(_curPageWidth, _triangleHeight),
-                        painter: TrianglePainter(
-                          color: widget.backgroundColor,
-                          position: position,
-                          isInverted: true,
-                          size: widget.button.size,
-                          screenWidth: MediaQuery.of(context).size.width,
-                        ),
-                      )
+                              size: Size(_curPageWidth, _triangleHeight),
+                              painter: TrianglePainter(
+                                color: widget.backgroundColor,
+                                position: position,
+                                isInverted: true,
+                                size: widget.button.size,
+                                screenWidth: MediaQuery.of(context).size.width,
+                              ),
+                            )
                           : Container(),
                       Expanded(
                         child: Stack(
                           children: <Widget>[
                             ClipRRect(
                               borderRadius:
-                              BorderRadius.all(Radius.circular(5)),
+                                  BorderRadius.all(Radius.circular(5)),
                               child: Container(
                                 color: widget.backgroundColor,
                                 height: widget.menuHeight,
@@ -255,33 +255,33 @@ class _MenuPopWidgetState extends State<_MenuPopWidget> {
                                 // 左箭头：判断是否是第一页，如果是第一页则不显示
                                 _curPage == 0
                                     ? Container(
-                                  height: widget.menuHeight,
-                                )
+                                        height: widget.menuHeight,
+                                      )
                                     : InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      _curPage--;
-                                    });
-                                  },
-                                  child: Container(
-                                    width: _arrowWidth,
-                                    height: widget.menuHeight,
-                                    child: Image.asset(
-                                      'images/left_white.png',
-                                      fit: BoxFit.none,
-                                    ),
-                                  ),
-                                ),
+                                        onTap: () {
+                                          setState(() {
+                                            _curPage--;
+                                          });
+                                        },
+                                        child: Container(
+                                          width: _arrowWidth,
+                                          height: widget.menuHeight,
+                                          child: Image.asset(
+                                            'images/left_white.png',
+                                            fit: BoxFit.none,
+                                          ),
+                                        ),
+                                      ),
                                 // 左箭头：判断是否是第一页，如果是第一页则不显示
                                 _curPage == 0
                                     ? Container(
-                                  height: widget.menuHeight,
-                                )
+                                        height: widget.menuHeight,
+                                      )
                                     : Container(
-                                  width: 1,
-                                  height: widget.menuHeight,
-                                  color: Colors.grey,
-                                ),
+                                        width: 1,
+                                        height: widget.menuHeight,
+                                        color: Colors.grey,
+                                      ),
 
                                 // 中间是ListView
                                 _buildList(_curPageChildCount, _curPageWidth,
@@ -290,40 +290,40 @@ class _MenuPopWidgetState extends State<_MenuPopWidget> {
                                 // 右箭头：判断是否有箭头，如果有就显示，没有就不显示
                                 _curArrowCount > 0
                                     ? Container(
-                                  width: 1,
-                                  color: Colors.grey,
-                                  height: widget.menuHeight,
-                                )
+                                        width: 1,
+                                        color: Colors.grey,
+                                        height: widget.menuHeight,
+                                      )
                                     : Container(
-                                  height: widget.menuHeight,
-                                ),
+                                        height: widget.menuHeight,
+                                      ),
                                 _curArrowCount > 0
                                     ? InkWell(
-                                  onTap: () {
-                                    if ((_curPage + 1) *
-                                        widget._pageMaxChildCount <
-                                        widget.actions.length)
-                                      setState(() {
-                                        _curPage++;
-                                      });
-                                  },
-                                  child: Container(
-                                    width: _arrowWidth,
-                                    height: widget.menuHeight,
-                                    child: Image.asset(
-                                      (_curPage + 1) *
-                                          widget
-                                              ._pageMaxChildCount >=
-                                          widget.actions.length
-                                          ? 'images/right_gray.png'
-                                          : 'images/right_white.png',
-                                      fit: BoxFit.none,
-                                    ),
-                                  ),
-                                )
+                                        onTap: () {
+                                          if ((_curPage + 1) *
+                                                  widget._pageMaxChildCount <
+                                              widget.actions.length)
+                                            setState(() {
+                                              _curPage++;
+                                            });
+                                        },
+                                        child: Container(
+                                          width: _arrowWidth,
+                                          height: widget.menuHeight,
+                                          child: Image.asset(
+                                            (_curPage + 1) *
+                                                        widget
+                                                            ._pageMaxChildCount >=
+                                                    widget.actions.length
+                                                ? 'images/right_gray.png'
+                                                : 'images/right_white.png',
+                                            fit: BoxFit.none,
+                                          ),
+                                        ),
+                                      )
                                     : Container(
-                                  height: widget.menuHeight,
-                                ),
+                                        height: widget.menuHeight,
+                                      ),
                               ],
                             ),
                           ],
@@ -332,14 +332,14 @@ class _MenuPopWidgetState extends State<_MenuPopWidget> {
                       isInverted
                           ? Container()
                           : CustomPaint(
-                        size: Size(_curPageWidth, _triangleHeight),
-                        painter: TrianglePainter(
-                          color: widget.backgroundColor,
-                          position: position,
-                          size: widget.button.size,
-                          screenWidth: MediaQuery.of(context).size.width,
-                        ),
-                      ),
+                              size: Size(_curPageWidth, _triangleHeight),
+                              painter: TrianglePainter(
+                                color: widget.backgroundColor,
+                                position: position,
+                                size: widget.button.size,
+                                screenWidth: MediaQuery.of(context).size.width,
+                              ),
+                            ),
                     ],
                   ),
                 ),
@@ -362,13 +362,12 @@ class _MenuPopWidgetState extends State<_MenuPopWidget> {
         return GestureDetector(
           onTap: () {
             widget.onValueChanged(_curPage * widget._pageMaxChildCount + index);
-
           },
           child: SizedBox(
             width: (_curPageWidth -
-                _curArrowWidth -
-                (_curPageChildCount - 1 + _curArrowCount) *
-                    _separatorWidth) /
+                    _curArrowWidth -
+                    (_curPageChildCount - 1 + _curArrowCount) *
+                        _separatorWidth) /
                 _curPageChildCount,
             height: widget.menuHeight,
             child: Center(
@@ -434,10 +433,13 @@ class _PopupMenuRouteLayout extends SingleChildLayoutDelegate {
     if (selectedItemOffset == null) {
       y = position.top;
     } else {
+      /* (size.height - position.top - position.bottom) == 0 */
       y = position.top +
           (size.height - position.top - position.bottom) / 2.0 -
           selectedItemOffset;
     }
+    // print(
+    //     'position:$position\n=>=>=>=>=>=>selectedItemOffset:$selectedItemOffset\t\tsize:$size\t\ty = ${position.top}+(${size.height}-${position.top}-${position.bottom})/2.0-$selectedItemOffset = $y');
 
     // Find the ideal horizontal position.
     double x;
@@ -464,13 +466,14 @@ class _PopupMenuRouteLayout extends SingleChildLayoutDelegate {
       }
     }
 
-    if (y < _kMenuScreenPadding)
+    if (y.abs()< _kMenuScreenPadding)
       y = _kMenuScreenPadding;
     else if (y + childSize.height > size.height - _kMenuScreenPadding)
       y = size.height - childSize.height;
     else if (y < childSize.height * 2) {
       y = position.top + height;
     }
+    // print('childSize: $childSize\t\tOffset: ${Offset(x, y)}');
     return Offset(x, y);
   }
 
