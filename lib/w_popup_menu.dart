@@ -466,7 +466,7 @@ class _PopupMenuRouteLayout extends SingleChildLayoutDelegate {
       }
     }
 
-    if (y.abs()< _kMenuScreenPadding)
+    if (y > 0 && y < _kMenuScreenPadding)
       y = _kMenuScreenPadding;
     else if (y + childSize.height > size.height - _kMenuScreenPadding)
       y = size.height - childSize.height;
